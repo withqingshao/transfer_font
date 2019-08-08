@@ -1,32 +1,35 @@
 <template>
   <div>
     <el-dialog title="数据提取" :visible.sync="dialogFormVisible" >
-      <el-table
-        :data="tableData"
-        style="width: 100%">
-        <el-table-column
-          prop="date"
-          label="日期"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="地址">
-        </el-table-column>
+      <!--<el-table-->
+        <!--:data="tableData"-->
+        <!--style="width: 100%">-->
+        <!--<el-table-column-->
+          <!--prop="index"-->
+          <!--label="日期"-->
+          <!--width="180">-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+          <!--prop="label"-->
+          <!--label="姓名"-->
+          <!--width="180">-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+          <!--prop="value"-->
+          <!--label="地址">-->
+        <!--</el-table-column>-->
+      <!--</el-table>-->
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column :prop="field.name" :label="field.name" width="180" v-for="field,index in fields" :key="index"></el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page.sync="pageInfo.pageNum"
+        :current-page.sync="dealPageInfo.pageNum"
         :page-sizes="[2, 4, 8, 10]"
-        :page-size="pageInfo.pageSize"
+        :page-size="dealPageInfo.pageSize"
         layout="sizes, prev, pager, next"
-        :total="pageInfo.total">
+        :total="dealPageInfo.total">
       </el-pagination>
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="过滤条件">
@@ -111,8 +114,10 @@
         this.dialogFormVisible=true
         let pythonReadUrl="http://localhost:8082/read?url="+row.url+"&type="+row.fileType
         axios.get(pythonReadUrl).then(res=>{
-          console.log("aaaa--")
           console.log(res.data)
+          this.tableData=res.data.data
+          this.fields=res.data.schema.fields
+          console.log(this.fields)
         }).catch(error=>{
           console.log(error)
         })
@@ -161,6 +166,9 @@
     data() {
       return {
         dialogFormVisible:false,
+        dealPageSize:2,
+        dealPageNum:1,
+        dealPageInfo:{},
         pageSize:2,
         pageNum:1,
         pageInfo:{},
@@ -176,23 +184,8 @@
           resource: '',
           desc: ''
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: [],
+        fields:[]
       }
     }
   }
