@@ -1,0 +1,27 @@
+{
+  "dbOptions": [{
+    "value": "1",
+    "label": "mysql"
+  }, {
+    "value": "2",
+    "label": "oracle"
+  }, {
+    "value": "3",
+    "label": "postpresql"
+  }],
+  "fileTypes": [{
+    "value": "1",
+    "label": "csv"
+  }, {
+    "value": "2",
+    "label": "json"
+  }, {
+    "value": "3",
+    "label": "excel"
+  }],
+  "dbParameters":
+    {
+      "1": ["ip","port","db","username","password"],
+      "2": ["username","password"]
+    }
+}
