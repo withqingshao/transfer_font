@@ -7,9 +7,9 @@
       <el-select v-model="form.type" placeholder="请选择" @change="change()">
         <el-option
           v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
+          :key="item.fileId"
+          :label="item.name"
+          :value="item.fileId">
         </el-option>
       </el-select>
     </el-form-item>
@@ -49,8 +49,19 @@
             name: '',
             type:'',
           },
-          options: dbJson.fileTypes
+          options: []
         }
+      },
+      created(){
+          let url="http://localhost:9090/project/file"
+          axios.get(url).then(res=>{
+            console.log(res.data)
+            if(res.data.status){
+              this.options=res.data.data
+            }
+          }).then(error=>{
+            console.log(error)
+          })
       },
       methods: {
         beforeUpload(file){
@@ -89,6 +100,7 @@
                   message: '新建项目成功',
                   type: 'success'
                 });
+                this.$router.push("/project")
               }else{
                 this.$notify.error({
                   title: '错误',

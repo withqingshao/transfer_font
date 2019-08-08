@@ -8,6 +8,8 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><router-link to="/project/create">创建项目</router-link></el-dropdown-item>
             <el-dropdown-item><router-link to="/datasource/create">新建数据源</router-link></el-dropdown-item>
+            <el-dropdown-item><router-link to="/project">项目列表</router-link></el-dropdown-item>
+            <el-dropdown-item><router-link to="/datasource">数据源列表</router-link></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-aside>
@@ -62,6 +64,9 @@ export default {
 
   body > .el-container {
     margin-bottom: 40px;
+  }
+  a{
+    text-decoration: none;
   }
 
   /*.el-container:nth-child(5) .el-aside,*/
