@@ -33,18 +33,18 @@
       </el-pagination>
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="过滤条件">
-          <el-input v-model="form.name"></el-input>
+          <el-row>
+            <el-col :span="18"><el-input v-model="form.name"></el-input></el-col>
+            <el-col :span="6"><el-button>执行过滤</el-button></el-col>
+          </el-row>
         </el-form-item>
         <el-form-item label="提取字段">
-          <el-checkbox-group v-model="form.type">
-            <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-            <el-checkbox label="地推活动" name="type"></el-checkbox>
-            <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-            <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+          <el-checkbox-group v-model="form.keyword">
+            <el-checkbox :label="field" name="keyword" v-for="field,index in fields" :key="index"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="存储类型">
-          <el-select v-model="form.type" placeholder="请选择" @change="change()">
+        <el-form-item label="存储类型" >
+          <el-select v-model="form.type" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.fileId"
@@ -175,14 +175,9 @@
         url:"http://localhost:9090/project",
         options: [],
         form: {
+          keyword:[],
           name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+          type: '',
         },
         tableData: [],
         fields:[]
@@ -192,5 +187,5 @@
 </script>
 
 <style scoped>
-.el-dialog__header{}
+
 </style>
