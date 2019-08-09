@@ -19,15 +19,15 @@
           <!--label="地址">-->
         <!--</el-table-column>-->
       <!--</el-table>-->
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="dealPageInfo.list" style="width: 100%">
         <el-table-column :prop="field.name" :label="field.name" width="180" v-for="field,index in fields" :key="index"></el-table-column>
       </el-table>
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="dealPageInfo.pageNum"
+        @size-change="dealhandleSizeChange"
+        @current-change="dealhandleCurrentChange"
+        :current-page.sync="dealPageNum"
         :page-sizes="[2, 4, 8, 10]"
-        :page-size="dealPageInfo.pageSize"
+        :page-size="dealPageSize"
         layout="sizes, prev, pager, next"
         :total="dealPageInfo.total">
       </el-pagination>
@@ -40,7 +40,7 @@
         </el-form-item>
         <el-form-item label="提取字段">
           <el-checkbox-group v-model="form.keyword">
-            <el-checkbox :label="field" name="keyword" v-for="field,index in fields" :key="index"></el-checkbox>
+            <el-checkbox :label="field.name" name="keyword" v-for="field,index in fields" :key="index"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="存储类型" >
@@ -114,19 +114,53 @@
         this.dialogFormVisible=true
         let pythonReadUrl="http://localhost:8082/read?url="+row.url+"&type="+row.fileType
         axios.get(pythonReadUrl).then(res=>{
-          console.log(res.data)
-          this.tableData=res.data.data
+          /*
+          将数据构造成pageSize
+           */
+          this.analyzeData=res.data
+          let pageInfo={}
+          //pageInfo["list"]=res.data.data
+          if(res.data.data.length%this.dealPageSize==0){
+            pageInfo["pageSize"]=res.data.data.length/this.dealPageSize
+          }else{
+            let result=Math.floor(res.data.data.length/this.dealPageSize)
+            pageInfo["pageSize"]=result+1
+          }
+          pageInfo["list"]=res.data.data.slice(0,pageInfo.pageSize*this.dealPageNum)
+          pageInfo["pageNum"]=this.dealPageNum
+          pageInfo["total"]=res.data.data.length
+          this.dealPageInfo=pageInfo
           this.fields=res.data.schema.fields
-          console.log(this.fields)
         }).catch(error=>{
           console.log(error)
         })
       },
       handleSizeChange(val){
-
+        console.log("当前页数--"+val)
       },
       handleCurrentChange(){
 
+      },
+      dealhandleSizeChange(val){
+        console.log("当前size"+val)
+        let pageInfo={}
+        if(this.analyzeData.data.length%val==0){
+          pageInfo["pageSize"]=this.analyzeData.data.length/val
+        }else{
+          let result=Math.floor(this.analyzeData.data.length/val)
+          pageInfo["pageSize"]=result+1
+        }
+        pageInfo["list"]=this.analyzeData.data.slice(0,val*this.dealPageNum)
+        pageInfo["total"]=this.analyzeData.data.length
+        pageInfo["pageNum"]=this.dealPageNum
+        this.dealPageInfo=pageInfo
+        console.log(this.dealPageInfo)
+      },
+      dealhandleCurrentChange(val){
+         console.log("当前页数--"+val)
+         //console.log((val-1)*this.de)
+         this.dealPageInfo["list"]=this.analyzeData.data.slice((val-1)*this.dealPageSize,val*this.dealPageSize)
+         this.dealPageInfo["pageNum"]=val
       },
       dateFormat: function(row, column){
         var date = row[column.property];
@@ -166,6 +200,7 @@
     data() {
       return {
         dialogFormVisible:false,
+        analyzeData:{},
         dealPageSize:2,
         dealPageNum:1,
         dealPageInfo:{},
