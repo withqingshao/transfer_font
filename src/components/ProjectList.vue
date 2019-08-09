@@ -204,7 +204,7 @@
         dealPageSize:2,
         dealPageNum:1,
         dealPageInfo:{},
-        pageSize:2,
+        pageSize:4,
         pageNum:1,
         pageInfo:{},
         url:"http://localhost:9090/project",

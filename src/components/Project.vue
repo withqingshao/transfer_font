@@ -69,7 +69,8 @@
           let index = name.lastIndexOf(".")
           let type = name.substring(index + 1)
           console.log(type)
-          if (type == "json" || type == "csv" ||type=="excel") {
+          console.log(type=="xlsx")
+          if (type == "json" || type == "csv" ||type=="xlsx") {
             return true;
           } else {
             this.$notify.error({
